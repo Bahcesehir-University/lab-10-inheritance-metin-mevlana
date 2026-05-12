@@ -41,20 +41,27 @@ protected:
     //       std::string make
     //       int year
     //       double fuelLevel
-
+    std::string make;
+    int year;
+    double fuellevel;
 public:
     // TODO: declare constructor
     //       Vehicle(std::string make, int year, double fuelLevel)
+    Vehicle(std::string make, int year, double fuellevel);
 
     // TODO: declare getters (const)
     //       getMake(), getYear(), getFuelLevel()
+    std::string getmake()const;
+    int getyear()const;
+    double getfuellevel()const;
 
     // TODO: declare refuel(double amount)
     //       Adds amount to fuelLevel. Max is 100.0. Ignore negative amounts.
-
+    void refuel(double amount);
     // TODO: declare pure virtual describe() returning std::string
-
+    virtual std::string describe()const=0;
     // TODO: declare virtual destructor
+    virtual ~Vehicle(){}
 };
 
 // ----------------------------------------------------------------
@@ -76,13 +83,15 @@ public:
 class Car : public Vehicle {
 private:
     // TODO: int numDoors
+    int numdoors;
 
 public:
     // TODO: Constructor(make, year, fuelLevel, numDoors)
-
+    Car(std::string make, int year, double fuellevel, int doors);
     // TODO: getNumDoors()
-
+    int getnumdoors() const;
     // TODO: describe() override
+    std::string describe()const override;
 };
 
 // ----------------------------------------------------------------
@@ -104,13 +113,16 @@ public:
 class Truck : public Vehicle {
 private:
     // TODO: double payloadTons
-
+    double patloadton;
 public:
     // TODO: Constructor(make, year, fuelLevel, payloadTons)
+ Truck(std::string make, int year, double fuellevel, double payloadton);
 
     // TODO: getPayloadTons()
+    double getpayloadton() const;
 
     // TODO: describe() override
+    std::string describe() const override;
 };
 
 // ================================================================
@@ -123,7 +135,25 @@ public:
 
 // TODO: Implement Vehicle constructor
 
+Vehicle::Vehicle(std::string make, int year, double fuellevel) {
+    this->make = make;
+    this->year = year;
+    this->fuellevel = fuellevel;
+}
+
 // TODO: Implement getMake(), getYear(), getFuelLevel()
+
+std::string Vehicle::getmake() const {
+    return make;
+}
+
+int Vehicle::getyear() const {
+    return year;
+}
+
+double Vehicle::getfuellevel() const {
+    return fuellevel;
+}
 
 // TODO: Implement refuel(double amount)
 //       Rules:
@@ -131,16 +161,48 @@ public:
 //         - fuelLevel += amount
 //         - If fuelLevel > 100.0, clamp to 100.0
 
+void Vehicle::refuel(double amount) {
+
+    if (amount <= 0) {
+        return;
+    }
+
+    fuellevel += amount;
+
+    if (fuellevel > 100.0) {
+        fuellevel = 100.0;
+    }
+}
+
 // ----------------------------------------------------------------
 // Car member function implementations
 // ----------------------------------------------------------------
 
 // TODO: Implement Car constructor (chain to Vehicle)
 
+Car::Car(std::string make, int year, double fuellevel, int doors)
+    : Vehicle(make, year, fuellevel) {
+
+    numdoors = doors;
+}
+
 // TODO: Implement getNumDoors()
+
+int Car::getnumdoors() const {
+    return numdoors;
+}
 
 // TODO: Implement describe()
 //       Hint: use std::ostringstream for formatted decimal output
+
+std::string Car::describe() const {
+
+    return "Car: " + make +
+           " (" + std::to_string(year) + ")" +
+           ", " + std::to_string(numdoors) +
+           " doors, fuel: " +
+           std::to_string(fuellevel) + "%";
+}
 
 // ----------------------------------------------------------------
 // Truck member function implementations
@@ -148,9 +210,28 @@ public:
 
 // TODO: Implement Truck constructor (chain to Vehicle)
 
+Truck::Truck(std::string make, int year, double fuellevel, double payloadton)
+    : Vehicle(make, year, fuellevel) {
+
+    patloadton = payloadton;
+}
+
 // TODO: Implement getPayloadTons()
 
+double Truck::getpayloadton() const {
+    return patloadton;
+}
+
 // TODO: Implement describe()
+
+std::string Truck::describe() const {
+
+    return "Truck: " + make +
+           " (" + std::to_string(year) + ")" +
+           ", payload: " + std::to_string(patloadton) +
+           "t, fuel: " +
+           std::to_string(fuellevel) + "%";
+}
 
 // ================================================================
 // MAIN
@@ -172,7 +253,7 @@ int main() {
 
     // Refuel demo
     c.refuel(20.0);
-    std::cout << "After refuel: " << c.getFuelLevel() << "%\n";
+    std::cout << "After refuel: " << c.getfuellevel() << "%\n";
 
     return 0;
 }
